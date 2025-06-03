@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>कृषि उत्पाद मूल्य - कृषि मित्र</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #2E7D32;
+            --secondary-green: #4CAF50;
+            --accent-orange: #FF9800;
+            --background: #F8F9FA;
+            --text-dark: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-green), #1B5E20);
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .search-box {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        input, select, button {
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        button {
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .price-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .price-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .crop-name {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            display: none;
+        }
+
+        .error {
+            color: #d32f2f;
+            padding: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero-section">
+            <h1>कृषि उत्पाद मूल्य ट्रैकर</h1>
+            <p>भारत सरकार के APMC डेटा के साथ रीयल-टाइम मूल्य</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="फसल खोजें (उदा. गेहूं, चावल)">
+            <select id="stateSelect">
+                <option value="">सभी राज्य</option>
+            </select>
+            <button onclick="fetchPrices()"><i class="fas fa-search"></i> खोजें</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner fa-spin"></i> डेटा लोड हो रहा है...
+        </div>
+
+        <div class="error" id="errorMsg"></div>
+
+        <div class="price-grid" id="priceGrid"></div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_KEY = '579b464db66ec23bdd0000019bbe43030df944f16482d63f7661ae63'; // Replace with your API key
+        const API_URL = 'https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070';
+
+        // State List (Will be populated from API)
+        let states = new Map();
+
+        // Initialize State Dropdown
+        async function initStates() {
+            try {
+                const response = await fetch(`${API_URL}?api-key=${API_KEY}&filters%5Bstate%5D&limit=100`);
+                const data = await response.json();
+                
+                data.records.forEach(record => {
+                    if(!states.has(record.state)) {
+                        states.set(record.state, record.state);
+                    }
+                });
+
+                const stateSelect = document.getElementById('stateSelect');
+                states.forEach((value) => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = value;
+                    stateSelect.appendChild(option);
+                });
+            } catch (error) {
+                showError('राज्य सूची लोड करने में विफल');
+            }
+        }
+
+        // Fetch Prices from API
+        async function fetchPrices() {
+            const loading = document.getElementById('loading');
+            const errorMsg = document.getElementById('errorMsg');
+            const priceGrid = document.getElementById('priceGrid');
+            
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const selectedState = document.getElementById('stateSelect').value;
+
+            try {
+                loading.style.display = 'block';
+                errorMsg.textContent = '';
+                priceGrid.innerHTML = '';
+
+                const response = await fetch(
+                    `${API_URL}?api-key=${API_KEY}&format=json&limit=100${
+                        selectedState ? `&filters%5Bstate%5D=${selectedState}` : ''
+                    }`
+                );
+
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+                const { records } = await response.json();
+
+                const filtered = records.filter(item => 
+                    item.commodity.toLowerCase().includes(searchTerm) &&
+                    (!selectedState || item.state === selectedState)
+                );
+
+                if (filtered.length === 0) {
+                    showError('कोई मिलान परिणाम नहीं मिला');
+                    return;
+                }
+
+                filtered.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'price-card';
+                    card.innerHTML = `
+                        <div class="crop-name">${item.commodity}</div>
+                        <div class="price">₹${item.modal_price}/क्विंटल</div>
+                        <div class="details">
+                            <p><i class="fas fa-map-marker-alt"></i> ${item.district}, ${item.state}</p>
+                            <p><i class="fas fa-calendar-alt"></i> ${new Date(item.arrival_date).toLocaleDateString('hi-IN')}</p>
+                            <p><i class="fas fa-warehouse"></i> ${item.market}</p>
+                        </div>
+                    `;
+                    priceGrid.appendChild(card);
+                });
+
+            } catch (error) {
+                showError(`डेटा लोड करने में त्रुटि: ${error.message}`);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('errorMsg').textContent = message;
+        }
+
+        // Initialize on load
+        window.onload = () => {
+            initStates();
+            fetchPrices();
+        };
+
+        // Real-time search
+        document.getElementById('searchInput').addEventListener('input', fetchPrices);
+        document.getElementById('stateSelect').addEventListener('change', fetchPrices);
+    </script>
+</body>
+</html>

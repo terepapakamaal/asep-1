@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoilScan Pro - Advanced Soil Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --secondary: #4CAF50;
+            --background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            --text: #1B5E20;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-effect: rgba(255, 255, 255, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+        }
+
+        .analysis-container {
+            background: var(--glass-effect);
+            backdrop-filter: blur(12px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+
+        .parameter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .parameter-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--primary);
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .search-button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.8rem;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .search-button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin: 2rem auto;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            backdrop-filter: blur(12px);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .crop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .crop-card {
+            background: var(--glass-effect);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .crop-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .booking-section {
+            margin-top: 3rem;
+            background: var(--glass-effect);
+            border-radius: 1.5rem;
+            padding: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .form-input {
+            padding: 1rem;
+            border: 2px solid var(--primary);
+            border-radius: 0.8rem;
+            width: 100%;
+            background: var(--card-bg);
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #e8f5e9;
+            color: #2E7D32;
+        }
+
+        .status-message.error {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SoilScan Pro</h1>
+            <p class="tagline">Smart Agricultural Analysis</p>
+        </header>
+
+        <div class="analysis-container">
+            <div class="parameter-grid">
+                <div class="parameter-card">
+                    <label>Soil pH Level</label>
+                    <input type="number" id="phInput" class="search-input" 
+                           min="0" max="14" step="0.1" placeholder="5.0-8.0">
+                </div>
+                
+                <div class="parameter-card">
+                    <label>Humidity Level</label>
+                    <select id="humidityInput" class="search-input">
+                        <option value="dry">Dry</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                
+                <div class="parameter-card">
+                    <label>Temperature (°C)</label>
+                    <input type="number" id="tempInput" class="search-input" 
+                           min="0" max="50" placeholder="0-50°C">
+                </div>
+            </div>
+
+            <button class="search-button" onclick="analyzeSoil()">
+                <i class="fas fa-seedling"></i> Analyze Soil
+            </button>
+            <div class="status-message error" id="errorMessage"></div>
+        </div>
+
+        <div class="result-card" id="resultCard" style="display: none;">
+            <h2>Recommended Crops</h2>
+            <div class="crop-grid" id="cropResults"></div>
+        </div>
+
+        <div class="booking-section">
+            <h2>Book Professional Soil Test</h2>
+            <div class="form-grid">
+                <input type="text" id="userName" class="form-input" placeholder="Full Name">
+                <input type="email" id="userEmail" class="form-input" placeholder="Email Address">
+                <input type="tel" id="userPhone" class="form-input" placeholder="Phone Number">
+                <input type="text" id="userLocation" class="form-input" placeholder="Location">
+                <input type="date" id="testDate" class="form-input">
+            </div>
+            <button class="search-button" onclick="bookSoilTest()">
+                <i class="fas fa-calendar-check"></i> Book Soil Test
+            </button>
+            <div class="status-message" id="bookingStatus"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyATODPEPLVaVg_Alrdet9flGaUpIOc8HD0",
+            authDomain: "asep-bbc34.firebaseapp.com",
+            projectId: "asep-bbc34",
+            storageBucket: "asep-bbc34.appspot.com",
+            messagingSenderId: "649819916593",
+            appId: "1:649819916593:web:7544bda86e7bae47f24810"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Automatic anonymous authentication
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                auth.signInAnonymously().catch(error => {
+                    console.error("Authentication error:", error);
+                    showStatus('Failed to initialize session. Please refresh the page.', 'error', 'bookingStatus');
+                });
+            }
+        });
+
+        // Crop Database
+        const cropDatabase = [
+            {
+                name: "Tomato",
+                ph: [5.5, 7.0],
+                humidity: "moderate",
+                temp: [18, 30],
+                water: "Regular watering",
+                nutrients: "N-P-K: 5-10-5",
+                duration: "70-90 days"
+            },
+            {
+                name: "Rice",
+                ph: [5.0, 6.5],
+                humidity: "high",
+                temp: [20, 35],
+                water: "Flood irrigation",
+                nutrients: "N-P-K: 10-5-5",
+                duration: "110-130 days"
+            },
+            {
+                name: "Wheat",
+                ph: [6.0, 7.5],
+                humidity: "moderate",
+                temp: [15, 25],
+                water: "Moderate irrigation",
+                nutrients: "N-P-K: 12-6-4",
+                duration: "120-140 days"
+            },
+            {
+                name: "Carrot",
+                ph: [6.0, 7.0],
+                humidity: "moderate",
+                temp: [15, 25],
+                water: "Regular watering",
+                nutrients: "N-P-K: 3-12-12",
+                duration: "70-80 days"
+            },
+            {
+                name: "Potato",
+                ph: [4.8, 6.5],
+                humidity: "moderate",
+                temp: [15, 20],
+                water: "Consistent moisture",
+                nutrients: "N-P-K: 5-10-10",
+                duration: "90-120 days"
+            },
+            {
+                name: "Corn",
+                ph: [5.8, 7.0],
+                humidity: "moderate",
+                temp: [21, 30],
+                water: "Deep watering",
+                nutrients: "N-P-K: 10-10-10",
+                duration: "60-100 days"
+            },
+            {
+                name: "Spinach",
+                ph: [6.0, 7.5],
+                humidity: "high",
+                temp: [10, 20],
+                water: "Frequent light watering",
+                nutrients: "N-P-K: 4-6-3",
+                duration: "40-50 days"
+            }
+        ];
+
+        async function bookSoilTest() {
+            const user = auth.currentUser;
+            if (!user) {
+                showStatus('Please wait while we authenticate your session...', 'error', 'bookingStatus');
+                return;
+            }
+
+            const bookingData = {
+                uid: user.uid,
+                name: document.getElementById('userName').value.trim(),
+                email: document.getElementById('userEmail').value.trim(),
+                phone: document.getElementById('userPhone').value.trim(),
+                location: document.getElementById('userLocation').value.trim(),
+                date: document.getElementById('testDate').value,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            // Validation
+            if (!bookingData.name || !bookingData.email || !bookingData.phone || !bookingData.location || !bookingData.date) {
+                showStatus('Please fill all required fields!', 'error', 'bookingStatus');
+                return;
+            }
+
+            try {
+                await db.collection('soilTests').add(bookingData);
+                showStatus(`Booking successful! Report will be sent to ${bookingData.email}`, 'success', 'bookingStatus');
+                clearForm();
+            } catch (error) {
+                console.error('Booking error:', error);
+                showStatus(`Booking failed: ${error.message}`, 'error', 'bookingStatus');
+            }
+        }
+
+        function analyzeSoil() {
+            const ph = parseFloat(document.getElementById('phInput').value);
+            const humidity = document.getElementById('humidityInput').value;
+            const temp = parseFloat(document.getElementById('tempInput').value);
+            const errorEl = document.getElementById('errorMessage');
+
+            // Input validation
+            if (isNaN(ph) || isNaN(temp)) {
+                showStatus('Please fill all soil parameters!', 'error', 'errorMessage');
+                document.getElementById('resultCard').style.display = 'none';
+                return;
+            }
+
+            if (ph < 0 || ph > 14) {
+                showStatus('pH value must be between 0 and 14!', 'error', 'errorMessage');
+                document.getElementById('resultCard').style.display = 'none';
+                return;
+            }
+
+            if (temp < 0 || temp > 50) {
+                showStatus('Temperature must be between 0°C and 50°C!', 'error', 'errorMessage');
+                document.getElementById('resultCard').style.display = 'none';
+                return;
+            }
+
+            // Filter crops
+            const suitableCrops = cropDatabase.filter(crop => 
+                ph >= crop.ph[0] && ph <= crop.ph[1] &&
+                humidity === crop.humidity &&
+                temp >= crop.temp[0] && temp <= crop.temp[1]
+            );
+
+            displayResults(suitableCrops);
+        }
+
+        function displayResults(crops) {
+            const resultsContainer = document.getElementById('cropResults');
+            resultsContainer.innerHTML = crops.length ? 
+                crops.map(crop => `
+                    <div class="crop-card">
+                        <h3>${crop.name}</h3>
+                        <p><i class="fas fa-tint"></i> ${crop.water}</p>
+                        <p><i class="fas fa-thermometer-half"></i> ${crop.temp.join('°C - ')}°C</p>
+                        <p><i class="fas fa-clock"></i> ${crop.duration}</p>
+                        <p><i class="fas fa-flask"></i> ${crop.nutrients}</p>
+                    </div>
+                `).join('') : 
+                '<p>No suitable crops found for these conditions</p>';
+
+            document.getElementById('resultCard').style.display = 'block';
+            showStatus('', 'clear', 'errorMessage');
+        }
+
+        function showStatus(message, type, elementId) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = message ? `<i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i> ${message}` : '';
+            el.className = `status-message ${type}`;
+            el.style.display = message ? 'block' : 'none';
+            
+            if (type === 'success') setTimeout(() => el.style.display = 'none', 5000);
+        }
+
+        function clearForm() {
+            ['userName', 'userEmail', 'userPhone', 'userLocation', 'testDate']
+                .forEach(id => document.getElementById(id).value = '');
+        }
+    </script>
+</body>
+</html>

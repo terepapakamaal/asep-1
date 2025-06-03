@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishi Mitra - Farmer's Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+        --primary-green: #2E7D32;
+        --secondary-green: #4CAF50;
+        --accent-orange: #FF9800;
+        --land-color: #689F38;
+        --background: #F8F9FA;
+        --text-dark: #2c3e50;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--background);
+        color: #333;
+    }
+
+    /* News Ticker */
+    .news-ticker {
+        background: var(--primary-green);
+        padding: 12px 0;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .ticker-wrapper {
+        display: inline-block;
+        white-space: nowrap;
+        animation: ticker 30s linear infinite;
+    }
+
+    @keyframes ticker {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
+
+    .ticker-item {
+        display: inline-block;
+        padding: 0 40px;
+        color: white;
+        font-size: 0.9rem;
+    }
+
+    /* Header and Menu */
+    header {
+        background: linear-gradient(135deg, var(--primary-green), #1B5E20);
+        color: white;
+        padding: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .menu-icon {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 1.5rem;
+        z-index: 1100;
+    }
+
+    .side-menu {
+        position: fixed;
+        left: -300px;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        background: white;
+        box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+        transition: 0.3s;
+        z-index: 1200;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .side-menu.open {
+        left: 0;
+    }
+
+    .menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .close-btn {
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #666;
+        padding: 5px;
+    }
+
+    /* User Details */
+    .user-info {
+        text-align: center;
+        padding: 20px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .user-details {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f5f5f5;
+        border-radius: 8px;
+    }
+
+    .user-detail-item {
+        margin: 10px 0;
+        font-size: 0.9rem;
+    }
+
+    .user-detail-item strong {
+        color: var(--primary-green);
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    /* Main Content */
+    .main-content {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 20px;
+    }
+
+    /* Services Grid */
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+
+    .service-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+        min-height: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+    }
+
+    .service-card i {
+        margin-bottom: 1rem;
+    }
+
+    /* Awareness Section */
+    .awareness-section {
+        margin: 3rem 0;
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .awareness-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    .awareness-card {
+        padding: 1.5rem;
+        background: #f8fff8;
+        border-radius: 10px;
+        border-left: 4px solid var(--primary-green);
+    }
+
+    .intro-header {
+        text-align: center;
+        margin: 2rem 0;
+        padding: 2rem;
+        background: linear-gradient(135deg, var(--primary-green), #1B5E20);
+        color: white;
+        border-radius: 12px;
+    }
+
+    /* Toggle Section */
+    .toggle-section {
+        margin: 2rem 0;
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .toggle-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .toggle-content {
+        display: none;
+        padding: 1rem;
+        border-top: 2px solid #eee;
+    }
+
+    .toggle-content.active {
+        display: block;
+    }
+
+    .info-category {
+        margin: 1.5rem 0;
+    }
+
+    .info-category h3 {
+        color: var(--primary-green);
+        margin-bottom: 1rem;
+    }
+
+    .info-list {
+        list-style-type: none;
+        padding-left: 20px;
+    }
+
+    .info-list li {
+        margin: 0.8rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .info-list li::before {
+        content: "•";
+        color: var(--secondary-green);
+        position: absolute;
+        left: 0;
+        font-size: 1.2rem;
+    }
+
+    .external-link {
+        color: var(--primary-green);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .external-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .side-menu {
+            width: 250px;
+        }
+        
+        .intro-header h1 {
+            font-size: 1.5rem;
+        }
+    }
+    </style>
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/67c0b6077ca289190cc5184e/1il4ce3v0';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
+</head>
+<body>
+    <div class="news-ticker">
+        <div class="ticker-wrapper" id="tickerWrapper">
+            <span class="ticker-item">किसान क्रेडिट कार्ड योजना के लिए आवेदन प्रक्रिया सरल की गई</span>
+            <span class="ticker-item">नई कृषि बिल 2023: किसानों को मिलेंगे ये लाभ</span>
+            <span class="ticker-item">मानसून अपडेट: इस सप्ताह अच्छी बारिश का अनुमान</span>
+            <span class="ticker-item">जैविक खेती पर सरकार दे रही 50% अनुदान</span>
+            <span class="ticker-item">नई मृदा स्वास्थ्य योजना: अपने खेत की मिट्टी कराएं मुफ्त जांच</span>
+        </div>
+    </div>
+
+    <header>
+        <i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
+        <h1 style="text-align: center;">कृषि मित्र</h1>
+    </header>
+
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <h3>User Profile</h3>
+            <i class="fas fa-times close-btn" onclick="toggleMenu()"></i>
+        </div>
+
+        <div class="user-info">
+            <i class="fas fa-user-circle fa-3x"></i>
+            <h3 id="userName">name</h3>
+            <p id="userEmail">email</p>
+        </div>
+
+        <div class="user-details">
+            <div class="user-detail-item">
+                <strong>Address:</strong>
+                <span id="userAddress">-</span>
+            </div>
+            <div class="user-detail-item">
+                <strong>Phone:</strong>
+                <span id="userPhone">-</span>
+            </div>
+            <div class="user-detail-item">
+                <strong>Farmer Type:</strong>
+                <span id="userType">-</span>
+            </div>
+            <div class="user-detail-item">
+                <strong>Member Since:</strong>
+                <span id="joinDate">-</span>
+            </div>
+        </div>
+
+        <div class="menu-item" onclick="logout()" style="margin-top: 20px; padding: 15px; cursor: pointer;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="intro-header">
+            <h1>Welcome to Krishi Mitra</h1>
+            <p>Your Digital Farming Companion</p>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card" onclick="showSoilTesting()">
+                <i class="fas fa-flask fa-3x" style="color: var(--primary-green);"></i>
+                <h2>मृदा परीक्षण</h2>
+                <p>अपनी मिट्टी की गुणवत्ता जानें और उपयुक्त फसल चुनें</p>
+            </div>
+
+            <div class="service-card" onclick="showWeather()">
+                <i class="fas fa-cloud-sun-rain fa-3x" style="color: var(--accent-orange);"></i>
+                <h2>मौसम पूर्वानुमान</h2>
+                <p>विस्तृत मौसम अपडेट</p>
+            </div>
+
+            <div class="service-card" onclick="showLandTransformation()">
+                <i class="fas fa-tractor fa-3x" style="color: var(--land-color);"></i>
+                <h2>भूमि परिवर्तन</h2>
+                <p>उन्नत कृषि तकनीकों के साथ भूमि उपयोग अनुकूलन</p>
+            </div>
+
+            <div class="service-card" onclick="showMarketPrices()">
+                <i class="fas fa-chart-line fa-3x" style="color: var(--secondary-green);"></i>
+                <h2>बाजार भाव</h2>
+                <p>नवीनतम कृषि उत्पादों के बाजार भाव</p>
+            </div>
+            <div class="service-card" onclick="showOrganicFarming()">
+        <i class="fas fa-seedling fa-3x" style="color: var(--secondary-green);"></i>
+        <h2>जैविक खेती</h2>
+        <p>जैविक खेती तकनीकें और सरकारी अनुदान जानकारी</p>
+    </div>
+        </div>
+
+        <section class="awareness-section">
+            <h2><i class="fas fa-seedling"></i> कृषि जागरूकता</h2>
+            <div class="awareness-grid">
+                <div class="awareness-card">
+                    <h3>सतत कृषि के तरीके</h3>
+                    <ul>
+                        <li>फसल चक्र अपनाएं</li>
+                        <li>जैविक खाद का उपयोग</li>
+                        <li>जल संरक्षण तकनीक</li>
+                    </ul>
+                </div>
+                <div class="awareness-card">
+                    <h3>सरकारी योजनाएं</h3>
+                    <ul>
+                        <li>प्रधानमंत्री कृषि सिंचाई योजना</li>
+                        <li>किसान क्रेडिट कार्ड</li>
+                        <li>राष्ट्रीय कृषि बीमा</li>
+                    </ul>
+                </div>
+                <div class="awareness-card">
+                    <h3>आपात सहायता</h3>
+                    <ul>
+                        <li>कृषि विशेषज्ञ हेल्पलाइन: 1800-123-456</li>
+                        <li>मौसम आपातकालीन सेवा</li>
+                        <li>कीट नियंत्रण गाइड</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="toggle-section">
+            <div class="toggle-header" onclick="toggleInfoSection()">
+                <h2><i class="fas fa-info-circle"></i> कृषि संसाधन एवं मार्गदर्शन</h2>
+                <i class="fas fa-chevron-down" id="toggleIcon"></i>
+            </div>
+            
+            <div class="toggle-content" id="infoContent">
+                <div class="info-category">
+                    <h3>सेवाओं का विवरण</h3>
+                    <ul class="info-list">
+                        <li><strong>मृदा परीक्षण:</strong> मिट्टी की गुणवत्ता जांचें और उर्वरक सिफारिशें प्राप्त करें</li>
+                        <li><strong>मौसम पूर्वानुमान:</strong> 7 दिनों का विस्तृत मौसम पूर्वानुमान</li>
+                        <li><strong>बाजार भाव:</strong> निकटतम मंडियों के लाइव भाव अपडेट</li>
+                    </ul>
+                </div>
+
+                <div class="info-category">
+                    <h3>कृषि युक्तियाँ</h3>
+                    <ul class="info-list">
+                        <li>फसल चक्र अपनाकर मिट्टी की उर्वरता बनाए रखें</li>
+                        <li>ड्रिप सिंचाई से 40% तक पानी की बचत करें</li>
+                        <li>समेकित कीट प्रबंधन (IPM) तकनीकों का उपयोग करें</li>
+                    </ul>
+                </div>
+
+                <div class="info-category">
+                    <h3>आपातकालीन संपर्क</h3>
+                    <ul class="info-list">
+                        <li>कृषि सलाह हेल्पलाइन: <strong>1800-180-1551</strong></li>
+                        <li>मौसम आपदा चेतावनी: <strong>1078</strong> (टोल फ्री)</li>
+                        <li>कृषि बीमा हेल्पडेस्क: <strong>155255</strong></li>
+                    </ul>
+                </div>
+
+                <div class="info-category">
+                    <h3>सरकारी योजनाएँ</h3>
+                    <ul class="info-list">
+                        <li>
+                            <a href="https://pmkisan.gov.in" target="_blank" class="external-link">
+                                प्रधानमंत्री किसान सम्मान निधि
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://agricoop.nic.in" target="_blank" class="external-link">
+                                राष्ट्रीय कृषि विकास योजना
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://mgnrega.nic.in" target="_blank" class="external-link">
+                                मनरेगा कृषि योजना
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Initialization
+        const firebaseConfig = {
+            apiKey: "AIzaSyATODPEPLVaVg_Alrdet9flGaUpIOc8HD0",
+            authDomain: "asep-bbc34.firebaseapp.com",
+            projectId: "asep-bbc34",
+            storageBucket: "asep-bbc34.appspot.com",
+            messagingSenderId: "649819916593",
+            appId: "1:649819916593:web:7544bda86e7bae47f24810"
+        };
+
+        // Initialize Firebase services
+        let auth, db;
+
+        try {
+            // Initialize only once
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            auth = firebase.auth();
+            db = firebase.firestore();
+        } catch (error) {
+            console.error("Firebase initialization failed", error);
+            alert("Application initialization failed. Please refresh the page.");
+        }
+
+        // Auth State Listener
+        if (auth) {
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    loadUserData(user);
+                    if (!user.emailVerified) {
+                        alert('Please verify your email address to access all features');
+                    }
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+
+        // Logout Function (updated)
+        async function logout() {
+            try {
+                if (!auth) throw new Error("Authentication service not available");
+                await auth.signOut();
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed: ' + error.message);
+            }
+        }
+
+        // Improved User Data Loading
+        async function loadUserData(user) {
+            try {
+                const doc = await db.collection('farmers').doc(user.uid).get();
+                if (!doc.exists) throw new Error('User data not found');
+
+                const data = doc.data();
+                updateUI(data, user);
+
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                showDataError();
+            }
+        }
+
+        function updateUI(data, user) {
+            document.getElementById('userName').textContent = data.name || 'Not available';
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userAddress').textContent = data.address || 'Not available';
+            document.getElementById('userPhone').textContent = data.phone || 'Not available';
+            document.getElementById('userType').textContent = data.farmerType || 'Not specified';
+
+            if (data.createdAt) {
+                const joinDate = data.createdAt.toDate().toLocaleDateString('en-IN');
+                document.getElementById('joinDate').textContent = joinDate;
+            }
+        }
+
+        function showDataError() {
+            document.querySelectorAll('.user-detail-item span').forEach(el => {
+                el.textContent = 'Failed to load data';
+                el.style.color = 'red';
+            });
+        }
+
+        // Menu Toggle Function
+        function toggleMenu() {
+            const sideMenu = document.getElementById('sideMenu');
+            sideMenu.classList.toggle('open');
+        }
+
+        // Add Land Transformation Function
+        function showLandTransformation() {
+            window.location.href = 'land-transformation.html';
+            // Or temporary alert if page not ready
+            // alert('Land transformation analytics coming soon!');
+        }
+
+        // News Ticker Functions
+        async function fetchAgricultureNews() {
+            try {
+                const API_KEY = 'pub_71522e03c7c2929add512161f9ae8e7546ca3';
+                const response = await fetch(
+                    `https://ewsdata.io/api/1/news?apikey=${API_KEY}&q=agriculture%20OR%20farming&language=en&country=in`
+                );
+                
+                const data = await response.json();
+                if(data.results) {
+                    updateTicker(data.results);
+                }
+            } catch (error) {
+                document.getElementById('tickerWrapper').innerHTML = `
+                    <span class="ticker-item">कृषि समाचार अपडेट अस्थायी रूप से उपलब्ध नहीं</span>
+                `;
+            }
+        }
+
+        function updateTicker(articles) {
+            const tickerWrapper = document.getElementById('tickerWrapper');
+            tickerWrapper.innerHTML = articles.slice(0, 5).map(article => `
+                <span class="ticker-item">
+                    ${article.title} 
+                    <i class="fas fa-circle" style="font-size: 4px;"></i>
+                </span>`
+            ).join('');
+        }
+
+        function toggleInfoSection() {
+            const content = document.getElementById('infoContent');
+            const icon = document.getElementById('toggleIcon');
+            content.classList.toggle('active');
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-up');
+        }
+
+        // Navigation functions
+        function showSoilTesting() {
+            window.location.href = 'soil-testing.html';
+        }
+
+        function showWeather() {
+            window.location.href = 'weather.html';
+        }
+
+        function showMarketPrices() {
+            /* alert('Market prices feature coming soon!'); */
+            window.location.href = 'price.html';
+        }
+
+        function showOrganicFarming() {
+    window.location.href = 'organic-farming.html';
+}
+       
+    </script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land Transformation Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #2E7D32;
+            --secondary-green: #4CAF50;
+            --accent-orange: #FF9800;
+            --background: #F8F9FA;
+            --text-dark: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-green), #1B5E20);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .expert-call-banner {
+            background: #fff3e0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .call-button {
+            background: var(--primary-green);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .info-card {
+            background: #f8fff8;
+            padding: 2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-orange);
+            margin: 2rem 0;
+        }
+
+        .info-card h2 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding-left: 1.5rem;
+        }
+
+        .info-card li {
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .info-card li::before {
+            content: "✓";
+            color: var(--secondary-green);
+            position: absolute;
+            left: -1.5rem;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            background: var(--accent-orange);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        form {
+            display: grid;
+            gap: 1.5rem;
+            padding: 2rem;
+            background: #f8fff8;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        input, select {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+
+        button {
+            background: var(--primary-green);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .expert-call-banner {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Land Transformation Portal</h1>
+    </header>
+
+    <main>
+        <!-- 1. Call Request Section -->
+        <div class="expert-call-banner">
+            <div>
+                <h3>Need Immediate Assistance?</h3>
+                <p>Schedule a free consultation with our land experts</p>
+            </div>
+            <button class="call-button" onclick="showCallForm()">
+                <i class="fas fa-phone"></i>
+                Request Expert Call
+            </button>
+        </div>
+
+        <!-- 2. Intro and Information Section -->
+        <div class="content-section">
+            <div class="info-card">
+                <h2>Transform Your Land's Potential</h2>
+                <ul>
+                    <li>Convert barren/rocky land to fertile farmland</li>
+                    <li>Improve soil health & water retention</li>
+                    <li>Increase agricultural productivity</li>
+                    <li>Create sustainable farming ecosystems</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>Our Transformation Process</h2>
+                <ul>
+                    <li>Comprehensive land assessment</li>
+                    <li>Customized soil treatment plan</li>
+                    <li>Water management solutions</li>
+                    <li>Ongoing monitoring & support</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 3. Organic Farming Link -->
+        <div class="content-section">
+            <div class="cta-section">
+                <h3>Interested in Organic Transformation?</h3>
+                <a href="organic-farming.html" class="cta-button">
+                    <i class="fas fa-seedling"></i>
+                    Explore Organic Farming Methods
+                </a>
+            </div>
+        </div>
+
+        <!-- 4. Form Section -->
+        <div class="content-section">
+            <h2>Start Your Land Transformation</h2>
+            <form id="landForm" onsubmit="handleSubmit(event)">
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" required>
+
+                <label for="landArea">Land Area (acres):</label>
+                <input type="number" id="landArea" required>
+
+                <label for="soilType">Soil Type:</label>
+                <select id="soilType" required>
+                    <option value="">Select soil type</option>
+                    <option value="sandy">Sandy</option>
+                    <option value="clay">Clay</option>
+                    <option value="loamy">Loamy</option>
+                </select>
+
+                <button type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Request
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Call Request Modal -->
+    <div class="modal" id="callModal">
+        <h3>Request Expert Consultation</h3>
+        <form onsubmit="handleCallRequest(event)">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" required>
+
+            <label for="phone">Contact Number:</label>
+            <input type="tel" id="phone" pattern="[0-9]{10}" required>
+
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                <button type="submit">Submit</button>
+                <button type="button" onclick="closeModal()">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Modal Handling
+        function showCallForm() {
+            document.getElementById('callModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('callModal').style.display = 'none';
+        }
+
+        // Form Handling
+        function handleSubmit(event) {
+            event.preventDefault();
+            // Add form submission logic
+            alert('Form submitted successfully!');
+        }
+
+        function handleCallRequest(event) {
+            event.preventDefault();
+            // Add call request logic
+            alert('Call request received! We will contact you shortly.');
+            closeModal();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('callModal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
