@@ -1,0 +1,100 @@
+/* General Reset */
+body, h1, h2, p, form, label, input, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('weather-background.jpg'); /* Add a weather-related background image */
+    background-size: cover;
+    background-position: center;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header */
+header {
+    text-align: center;
+    background: rgba(0, 123, 255, 0.8);
+    color: white;
+    padding: 20px;
+    font-size: 2rem;
+}
+
+/* Main Content */
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.input-section {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.input-section h2 {
+    margin-bottom: 10px;
+    color: #007bff;
+    font-size: 1.8rem;
+}
+
+.input-section label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 1rem;
+}
+
+.input-section input {
+    width: 80%;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.input-section button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.input-section button:hover {
+    background-color: #0056b3;
+}
+
+.output-section {
+    text-align: center;
+}
+
+.output-section h2 {
+    color: #007bff;
+    font-size: 1.5rem;
+}
+
+.output-section p {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    background: rgba(0, 123, 255, 0.8);
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+}

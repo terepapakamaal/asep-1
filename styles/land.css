@@ -1,0 +1,102 @@
+/* General Reset */
+body, h1, h2, p, form, label, input, select, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('land.jpg'); /* Add a land transformation-related background image */
+    background-size: cover;
+    background-position: center;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header */
+header {
+    text-align: center;
+    background: rgba(34, 139, 34, 0.8); /* Green-themed header */
+    color: white;
+    padding: 20px;
+    font-size: 2rem;
+}
+
+/* Main Content */
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.form-section {
+    margin-bottom: 20px;
+}
+
+.form-section h2 {
+    margin-bottom: 20px;
+    color: #228B22; /* Forest Green */
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 1rem;
+}
+
+form input, form select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #228B22;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+form button:hover {
+    background-color: #006400; /* Dark Green */
+}
+
+/* Response Section */
+.response-section {
+    text-align: center;
+}
+
+.response-section h2 {
+    color: #228B22;
+    font-size: 1.5rem;
+}
+
+.response-section p {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    background: rgba(34, 139, 34, 0.8);
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+}
